@@ -41,7 +41,7 @@ public class RepositoryUtilsTest {
         Credential overridingCredentialProvided = new Credential(null, "", null, credentials.getId(), null, true);
         DeployitNotifier.DeployitDescriptor descriptor = new DeployitNotifier.DeployitDescriptor();
 
-        DeployitNotifier notifierSpy = spy(new DeployitNotifier("AdminGlobal1", "app1", null, null, null, null, false, null, overridingCredentialProvided));
+        DeployitNotifier notifierSpy = spy(new DeployitNotifier("AdminGlobal1", "app1", null, null, null, null, false, null, overridingCredentialProvided, false));
         doReturn(descriptor).when(notifierSpy).getDescriptor();
         doReturn(overridingCredentialProvided).when(notifierSpy).getOverridingCredential();
 

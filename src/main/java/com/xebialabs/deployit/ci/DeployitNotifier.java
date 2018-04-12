@@ -79,15 +79,16 @@ public class DeployitNotifier extends Notifier {
     public final JenkinsImportOptions importOptions;
     public final JenkinsDeploymentOptions deploymentOptions;
     public final boolean verbose;
+    public final boolean allowConcurrentDeployments;
 
     public Credential overridingCredential;
 
-    public DeployitNotifier(String credential, String application, String version, JenkinsPackageOptions packageOptions, JenkinsImportOptions importOptions, JenkinsDeploymentOptions deploymentOptions, boolean verbose, List<PackageProperty> packageProperties) {
-        this(credential, application, version, packageOptions, importOptions, deploymentOptions, verbose, packageProperties, null);
+    public DeployitNotifier(String credential, String application, String version, JenkinsPackageOptions packageOptions, JenkinsImportOptions importOptions, JenkinsDeploymentOptions deploymentOptions, boolean verbose, List<PackageProperty> packageProperties, boolean allowConcurrentDeployments) {
+        this(credential, application, version, packageOptions, importOptions, deploymentOptions, verbose, packageProperties, null, allowConcurrentDeployments);
     }
 
     @DataBoundConstructor
-    public DeployitNotifier(String credential, String application, String version, JenkinsPackageOptions packageOptions, JenkinsImportOptions importOptions, JenkinsDeploymentOptions deploymentOptions, boolean verbose, List<PackageProperty> packageProperties, Credential overridingCredential) {
+    public DeployitNotifier(String credential, String application, String version, JenkinsPackageOptions packageOptions, JenkinsImportOptions importOptions, JenkinsDeploymentOptions deploymentOptions, boolean verbose, List<PackageProperty> packageProperties, Credential overridingCredential, boolean allowConcurrentDeployments) {
         this.credential = credential;
         this.application = application;
         this.version = version;
@@ -97,11 +98,16 @@ public class DeployitNotifier extends Notifier {
         this.verbose = verbose;
         this.packageProperties = packageProperties;
         this.overridingCredential = overridingCredential;
+        this.allowConcurrentDeployments = allowConcurrentDeployments;
     }
 
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
-        return BuildStepMonitor.BUILD;
+        if (allowConcurrentDeployments) {
+            return BuildStepMonitor.NONE;
+        } else {
+            return BuildStepMonitor.BUILD;
+        }
     }
 
     @Override
